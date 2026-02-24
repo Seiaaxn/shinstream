@@ -1,0 +1,73 @@
+/* Accessibility CSS - Focus states and ARIA support */
+
+/* Focus visible styles */
+:focus-visible {
+    outline: 2px solid var(--color-primary, #7c3aed);
+    outline-offset: 2px;
+}
+
+/* Skip link for screen readers */
+.skip-link {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.skip-link:focus {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    padding: 1rem;
+    background: white;
+    color: black;
+    z-index: 9999;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --glass-bg: rgba(255, 255, 255, 1);
+        --glass-border: rgba(0, 0, 0, 0.5);
+    }
+
+    .dark {
+        --glass-bg-dark: rgba(0, 0, 0, 1);
+        --glass-border-dark: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus trap for modals */
+.focus-trap:focus {
+    outline: none;
+}

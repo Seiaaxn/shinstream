@@ -1,0 +1,139 @@
+{
+  "version": 2,
+  "regions": [
+    "sin1"
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "VERCEL": "1",
+    "TRUST_PROXY": "1",
+    "SESSION_SECRET": "kitanime-super-secret-key-2025-production-32-chars",
+    "CSRF_SECRET": "kitanime-csrf-secret-key-2025-production",
+    "API_BASE_URL": "https://anime-stream-red.vercel.app/v1",
+    "CORS_ORIGIN": "https://anime-stream-red.vercel.app",
+    "SITE_URL": "https://anime-stream-red.vercel.app",
+    "UPSTREAM_API_BASE_URL": "https://anime-stream-red.vercel.app/v1",
+    "ASSETS_URL": "https://anime-stream-red.vercel.app",
+    "CDN_URL": "https://anime-stream-red.vercel.app",
+    "STATIC_URL": "https://anime-stream-red.vercel.app/public",
+    "ENABLE_ANALYTICS": "true",
+    "ENABLE_ADSENSE": "true",
+    "ENABLE_CACHING": "true",
+    "ENABLE_COMPRESSION": "true",
+    "VERCEL_ANALYTICS_ID": "prj_anime-stream-red"
+  },
+  "builds": [
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    },
+    {
+      "src": "app.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/sw.js",
+      "headers": {
+        "Content-Type": "application/javascript",
+        "Service-Worker-Allowed": "/",
+        "Cache-Control": "no-cache"
+      },
+      "dest": "/public/sw.js"
+    },
+    {
+      "src": "/manifest.json",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "dest": "/public/manifest.json"
+    },
+    {
+      "src": "/js/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=604800, immutable"
+      },
+      "dest": "/public/js/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=604800, immutable"
+      },
+      "dest": "/public/css/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/public/images/$1"
+    },
+    {
+      "src": "/fonts/(.*)",
+      "dest": "/public/fonts/$1"
+    },
+    {
+      "src": "/stream",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Range, Content-Type"
+      },
+      "dest": "/app.js"
+    },
+    {
+      "src": "/proxy",
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      },
+      "dest": "/app.js"
+    },
+    {
+      "src": "/v1/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "^/$",
+      "headers": {
+        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200, stale-if-error=86400"
+      },
+      "dest": "/app.js"
+    },
+    {
+      "src": "^/ongoing$",
+      "headers": {
+        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200"
+      },
+      "dest": "/app.js"
+    },
+    {
+      "src": "^/complete$",
+      "headers": {
+        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200"
+      },
+      "dest": "/app.js"
+    },
+    {
+      "src": "^/anime/.*",
+      "headers": {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600"
+      },
+      "dest": "/app.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/app.js"
+    }
+  ],
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
+}

@@ -1,0 +1,69 @@
+/* Tailwind CSS Production Build */
+/* This file should be generated using: npx tailwindcss -i ./src/input.css -o ./public/css/tailwind.css --watch */
+
+/* For now, we'll use a minimal version for development */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for KitaNime */
+.anime-card {
+  transition: all 0.3s ease;
+}
+
+.anime-card:hover {
+  transform: translateY(-4px);
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scroll to top button styles */
+.scroll-to-top {
+  transition: all 0.3s ease;
+}
+
+.scroll-to-top:hover {
+  transform: scale(1.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

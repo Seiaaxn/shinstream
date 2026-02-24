@@ -1,0 +1,212 @@
+/* Enhanced dark mode styles for better text readability */
+.dark {
+  --text-muted-light: #6b7280;
+  --text-muted-dark: #9ca3af;
+  --text-primary-light: #4f46e5;
+  --text-primary-dark: #818cf8;
+  --text-success-light: #059669;
+  --text-success-dark: #34d399;
+  --text-danger-light: #dc2626;
+  --text-danger-dark: #f87171;
+  --text-warning-light: #d97706;
+  --text-warning-dark: #fbbf24;
+  --bg-dark: #0f172a;
+  --bg-secondary-dark: #1e293b;
+  --bg-tertiary-dark: #334155;
+}
+
+/* Dark mode background overrides */
+.dark body {
+  background-color: #0f172a !important;
+}
+
+.dark main {
+  background-color: #0f172a !important;
+}
+
+/* Force dark gradient for hero section */
+.dark .from-primary-600 {
+  --tw-gradient-from: #5b21b6 var(--tw-gradient-from-position) !important;
+}
+
+.dark .via-purple-600 {
+  --tw-gradient-via: #7e22ce var(--tw-gradient-via-position) !important;
+}
+
+.dark .to-indigo-700 {
+  --tw-gradient-to: #312e81 var(--tw-gradient-to-position) !important;
+}
+
+/* Dark mode container backgrounds */
+.dark .bg-white {
+  background-color: #1f2937 !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: #111827 !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1f2937 !important;
+}
+
+/* Enhance text readability in dark mode */
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-700 {
+  color: #9ca3af !important;
+  /* lighter gray in dark mode */
+}
+
+.dark .text-gray-800,
+.dark .text-gray-900 {
+  color: #e5e7eb !important;
+  /* even lighter gray for dark text in dark mode */
+}
+
+/* Enhance form elements in dark mode */
+.dark input[type="text"],
+.dark input[type="password"],
+.dark input[type="email"],
+.dark input[type="number"],
+.dark select,
+.dark textarea {
+  background-color: #1f2937 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+
+.dark input::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Table styles for dark mode */
+.dark table {
+  color: #e5e7eb;
+}
+
+.dark table th {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.dark table tr:nth-child(even) {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+.dark table tr:hover {
+  background-color: rgba(55, 65, 81, 0.8);
+}
+
+/* Card styling in dark mode */
+.dark .card {
+  background-color: #1f2937;
+  border-color: rgba(75, 85, 99, 0.3);
+}
+
+/* Fix text colors in modal dialogs for dark mode */
+.dark .modal-content {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.dark .modal-header,
+.dark .modal-footer {
+  border-color: #374151;
+}
+
+/* Enhance button styles in dark mode */
+.dark .btn-light,
+.dark .btn-default {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #f9fafb;
+}
+
+.dark .btn-light:hover,
+.dark .btn-default:hover {
+  background-color: #4b5563;
+}
+
+/* SweetAlert2 Dark Theme */
+.dark .swal2-popup {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+.dark .swal2-title,
+.dark .swal2-html-container,
+.dark .swal2-confirm,
+.dark .swal2-cancel {
+  color: #f9fafb !important;
+}
+
+.dark .swal2-input,
+.dark .swal2-textarea,
+.dark .swal2-select {
+  background-color: #374151 !important;
+  color: #f9fafb !important;
+  border-color: #4b5563 !important;
+}
+
+/* Fix message alerts in dark mode */
+.dark .bg-red-100 {
+  background-color: rgba(220, 38, 38, 0.2) !important;
+}
+
+.dark .bg-green-100 {
+  background-color: rgba(5, 150, 105, 0.2) !important;
+}
+
+.dark .text-red-800 {
+  color: #f87171 !important;
+}
+
+.dark .text-green-800 {
+  color: #34d399 !important;
+}
+
+/* Enhanced dark mode card contrast */
+.dark .bg-gray-800 {
+  background-color: #1f2937 !important;
+}
+
+.dark .dark\:bg-gray-900 {
+  background-color: #0f172a !important;
+}
+
+/* Better text contrast in dark mode */
+.dark .dark\:text-gray-100 {
+  color: #f3f4f6 !important;
+}
+
+.dark .dark\:text-gray-200 {
+  color: #e5e7eb !important;
+}
+
+.dark .dark\:text-gray-300 {
+  color: #d1d5db !important;
+}
+
+/* Improved link colors in dark mode */
+.dark a {
+  color: #a78bfa;
+}
+
+.dark a:hover {
+  color: #c4b5fd;
+}
+
+/* Better focus states in dark mode */
+.dark :focus-visible {
+  outline-color: #a78bfa;
+}
+
+/* Enhanced animations in dark mode */
+@media (prefers-reduced-motion: reduce) {
+  .dark * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

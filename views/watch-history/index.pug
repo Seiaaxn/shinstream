@@ -1,0 +1,191 @@
+extends ../layout
+
+block content
+  div(class="container mx-auto px-4 md:px-6 lg:px-8 py-8")
+    div(class="max-w-6xl mx-auto")
+      // Header
+      div(class="mb-8")
+        div(class="flex items-center justify-between")
+          div
+            h1(class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2") Riwayat Tonton
+            p(class="text-gray-600 dark:text-gray-400") Lanjutkan menonton anime favorit Anda
+          div(class="flex items-center space-x-3")
+            button(id="clearHistory" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg")
+              svg(class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16")
+              span Hapus Semua
+      
+      // Filter and Sort
+      div(class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-8 border border-gray-200/50 dark:border-gray-700/50")
+        div(class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0")
+          div(class="flex items-center space-x-4")
+            div(class="flex items-center space-x-2")
+              label(for="sortBy" class="text-sm font-medium text-gray-700 dark:text-gray-300") Urutkan:
+              select(id="sortBy" class="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500")
+                option(value="recent") Terbaru
+                option(value="oldest") Terlama
+                option(value="title") Judul A-Z
+                option(value="progress") Progress
+          
+          div(class="flex items-center space-x-4")
+            div(class="flex items-center space-x-2")
+              label(for="filterStatus" class="text-sm font-medium text-gray-700 dark:text-gray-300") Status:
+              select(id="filterStatus" class="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500")
+                option(value="all") Semua
+                option(value="watching") Sedang Ditonton
+                option(value="completed") Selesai
+                option(value="paused") Dijeda
+      
+      // Watch History List
+      div(id="watchHistoryList" class="space-y-4")
+        if watchHistory && watchHistory.length > 0
+          each item in watchHistory
+            div(class="watch-history-item bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50 overflow-hidden group")
+              div(class="flex flex-col md:flex-row")
+                // Anime Poster
+                div(class="relative md:w-48 h-64 md:h-auto")
+                  img(src=item.poster_url || '/images/poster.png' alt=item.anime_title class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='/images/poster.png';")
+                  div(class="absolute top-3 left-3")
+                    div(class="bg-black/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full") Episode #{item.episode_number}
+                  div(class="absolute bottom-3 right-3")
+                    div(class="bg-primary-500 text-white text-xs px-2 py-1 rounded-full") #{item.completed ? 'Selesai' : 'Berlanjut'}
+                
+                // Content
+                div(class="flex-1 p-6")
+                  div(class="flex flex-col h-full")
+                    div(class="flex-1")
+                      h3(class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300")
+                        a(href=`/anime/${item.anime_slug}`)= item.anime_title
+                      
+                      // Progress Bar
+                      div(class="mb-4")
+                        div(class="flex items-center justify-between mb-2")
+                          span(class="text-sm text-gray-600 dark:text-gray-400") Progress
+                          span(class="text-sm font-medium text-gray-900 dark:text-gray-100") #{Math.round((item.watch_time / item.total_duration) * 100)}%
+                        div(class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2")
+                          div(class="bg-gradient-to-r from-primary-500 to-purple-500 h-2 rounded-full transition-all duration-300" style=`width: ${(item.watch_time / item.total_duration) * 100}%`)
+                      
+                      // Watch Time Info
+                      div(class="grid grid-cols-2 gap-4 mb-4")
+                        div
+                          span(class="text-sm text-gray-600 dark:text-gray-400 block") Waktu Tonton
+                          span(class="text-sm font-medium text-gray-900 dark:text-gray-100") #{Math.floor(item.watch_time / 60)}:#{String(Math.floor(item.watch_time % 60)).padStart(2, '0')}
+                        div
+                          span(class="text-sm text-gray-600 dark:text-gray-400 block") Durasi Total
+                          span(class="text-sm font-medium text-gray-900 dark:text-gray-100") #{Math.floor(item.total_duration / 60)}:#{String(Math.floor(item.total_duration % 60)).padStart(2, '0')}
+                      
+                      // Last Watched
+                      div(class="text-sm text-gray-600 dark:text-gray-400")
+                        span Terakhir ditonton: 
+                        span(class="font-medium") #{new Date(item.last_watched).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    
+                    // Actions
+                    div(class="flex items-center space-x-3 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700")
+                      a(href=`/anime/${item.anime_slug}/episode/${item.episode_number}` class="flex-1 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white px-4 py-2 rounded-xl text-center font-medium transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5")
+                        svg(class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z")
+                        span Lanjutkan Menonton
+                      
+                      button(class="remove-from-history px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg" data-anime-slug=item.anime_slug data-episode=item.episode_number)
+                        svg(class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16")
+        
+        else
+          // Empty State
+          div(class="text-center py-16")
+            div(class="w-24 h-24 mx-auto mb-6 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center")
+              svg(class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z")
+            h3(class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2") Belum Ada Riwayat Tonton
+            p(class="text-gray-600 dark:text-gray-400 mb-6") Mulai menonton anime untuk melihat riwayat tonton Anda di sini
+            a(href="/" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl hover:from-primary-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg")
+              svg(class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z")
+              span Jelajahi Anime
+      
+      // Pagination
+      if pagination && pagination.hasMore
+        div(class="flex justify-center mt-8")
+          button(id="loadMore" class="px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300 shadow-md hover:shadow-lg")
+            span Muat Lebih Banyak
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      // Clear history functionality
+      document.getElementById('clearHistory')?.addEventListener('click', function() {
+        if (confirm('Apakah Anda yakin ingin menghapus semua riwayat tonton?')) {
+          fetch('/watch-history/clear', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
+            } else {
+              alert('Gagal menghapus riwayat tonton');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus riwayat tonton');
+          });
+        }
+      });
+
+      // Remove single item from history
+      document.querySelectorAll('.remove-from-history').forEach(button => {
+        button.addEventListener('click', function() {
+          const animeSlug = this.dataset.animeSlug;
+          const episode = this.dataset.episode;
+          
+          if (confirm('Hapus dari riwayat tonton?')) {
+            fetch('/watch-history/remove', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                animeSlug: animeSlug,
+                episode: episode
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                this.closest('.watch-history-item').remove();
+              } else {
+                alert('Gagal menghapus dari riwayat tonton');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('Terjadi kesalahan saat menghapus dari riwayat tonton');
+            });
+          }
+        });
+      });
+
+      // Sort functionality
+      document.getElementById('sortBy')?.addEventListener('change', function() {
+        const sortBy = this.value;
+        // Implement sorting logic here
+        console.log('Sort by:', sortBy);
+      });
+
+      // Filter functionality
+      document.getElementById('filterStatus')?.addEventListener('change', function() {
+        const filterStatus = this.value;
+        // Implement filtering logic here
+        console.log('Filter by:', filterStatus);
+      });
+
+      // Load more functionality
+      document.getElementById('loadMore')?.addEventListener('click', function() {
+        // Implement load more logic here
+        console.log('Load more clicked');
+      });
+    });

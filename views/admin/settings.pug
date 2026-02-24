@@ -1,0 +1,356 @@
+extends layout
+
+block content
+  div(class="space-y-6")
+    div
+      h2(class="text-xl font-semibold text-gray-900") Pengaturan Website
+      p(class="text-gray-600 mt-1") Kelola pengaturan umum website dan fitur
+
+    if req && req.query && req.query.success === 'updated'
+      div(class="bg-green-50 border border-green-200 rounded-lg p-4")
+        div(class="flex")
+          svg(class="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20")
+            path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd")
+          p(class="text-green-800") Pengaturan berhasil disimpan!
+
+    if req && req.query && req.query.error === 'update_failed'
+      div(class="bg-red-50 border border-red-200 rounded-lg p-4")
+        div(class="flex")
+          svg(class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20")
+            path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd")
+          p(class="text-red-800") Gagal menyimpan pengaturan. Silakan coba lagi.
+
+    form(method="POST" action="/admin/settings" class="space-y-6")
+      // Informasi Website
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4 flex items-center")
+          svg(class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z")
+          span Informasi Website
+        
+        div(class="grid grid-cols-1 md:grid-cols-2 gap-6")
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Nama Website
+            input(type="text" name="site_title" value=settings.site_title || "KitaNime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Tagline
+            input(type="text" name="site_tagline" value=settings.site_tagline || "Streaming Anime Terlengkap" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+        
+        div
+          label(class="block text-sm font-medium text-gray-700 mb-2") Deskripsi Website
+          textarea(name="site_description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.site_description || "Website streaming anime terlengkap dengan koleksi anime ongoing dan complete terbaru"
+
+      // Informasi Kontak
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4 flex items-center")
+          svg(class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z")
+          span Informasi Kontak
+        
+        div(class="grid grid-cols-1 md:grid-cols-3 gap-6")
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Email Kontak
+            input(type="email" name="contact_email" value=settings.contact_email || "" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Nomor Telepon
+            input(type="tel" name="contact_phone" value=settings.contact_phone || "" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Alamat
+            input(type="text" name="contact_address" value=settings.contact_address || "" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+
+      // Media Sosial
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4 flex items-center")
+          svg(class="w-5 h-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-9 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2M9 8h6m-6 4h6m-6 4h6")
+          span Media Sosial
+        
+        div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Facebook
+            input(type="url" name="facebook" value=settings.social_media.facebook || "" placeholder="https://facebook.com/username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Twitter
+            input(type="url" name="twitter" value=settings.social_media.twitter || "" placeholder="https://twitter.com/username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Instagram
+            input(type="url" name="instagram" value=settings.social_media.instagram || "" placeholder="https://instagram.com/username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") YouTube
+            input(type="url" name="youtube" value=settings.social_media.youtube || "" placeholder="https://youtube.com/channel/username" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Discord
+            input(type="url" name="discord" value=settings.social_media.discord || "" placeholder="https://discord.gg/invite" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+
+      // Kebijakan dan Halaman Legal
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4 flex items-center")
+          svg(class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+          span Kebijakan dan Halaman Legal
+        
+        div(class="space-y-6")
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Kebijakan Privasi
+            textarea(name="privacy_policy" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.privacy_policy || ""
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Syarat dan Ketentuan
+            textarea(name="terms_of_service" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.terms_of_service || ""
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Kebijakan DMCA
+            textarea(name="dmca_policy" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.dmca_policy || ""
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Pusat Bantuan
+            textarea(name="help_center" rows="6" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.help_center || ""
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Tentang Kami
+            textarea(name="about_us" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.about_us || ""
+
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4") Cookie & Privasi
+        
+        div(class="space-y-4")
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="cookie_consent_enabled" checked=settings.cookie_consent_enabled class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Aktifkan popup persetujuan cookie
+            p(class="text-xs text-gray-500 mt-1") Tampilkan popup persetujuan cookie sesuai regulasi GDPR/privacy
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Teks Persetujuan Cookie
+            textarea(name="cookie_consent_text" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.cookie_consent_text || "Website ini menggunakan cookie untuk meningkatkan pengalaman pengguna. Dengan melanjutkan, Anda menyetujui penggunaan cookie."
+
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4") Google AdSense
+        
+        div(class="space-y-4")
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="adsense_enabled" checked=settings.adsense_enabled class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Aktifkan Google AdSense
+            p(class="text-xs text-gray-500 mt-1") Mengaktifkan fitur AdSense untuk slot iklan yang menggunakan tipe AdSense
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Publisher ID AdSense
+            input(type="text" name="adsense_publisher_id" value=settings.adsense_publisher_id placeholder="ca-pub-xxxxxxxxxxxxxxxxx" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+            p(class="text-xs text-gray-500 mt-1") ID publisher AdSense Anda (opsional, untuk auto ads)
+
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4") Pengaturan Video Player
+        
+        div(class="space-y-4")
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="player_autoplay" checked=settings.player_autoplay class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Autoplay video
+            p(class="text-xs text-gray-500 mt-1") Video akan otomatis diputar saat halaman dimuat
+          
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="player_subtitles_default" checked=settings.player_subtitles_default class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Aktifkan subtitle secara default
+            p(class="text-xs text-gray-500 mt-1") Subtitle akan aktif secara otomatis jika tersedia
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Volume Default (%)
+            input(type="number" name="player_default_volume" value=settings.player_default_volume || 80 min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4") SEO & Meta
+        
+        div(class="space-y-4")
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="sitemap_enabled" checked=settings.sitemap_enabled class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Generate sitemap.xml otomatis
+            p(class="text-xs text-gray-500 mt-1") Sitemap akan di-generate otomatis untuk SEO
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Google Analytics ID
+            input(type="text" name="google_analytics_id" value=settings.google_analytics_id placeholder="G-XXXXXXXXXX" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+            p(class="text-xs text-gray-500 mt-1") ID Google Analytics untuk tracking (opsional)
+
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4") Cache & Performance
+        
+        div(class="space-y-4")
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Cache Duration API (menit)
+            input(type="number" name="api_cache_duration" value=settings.api_cache_duration || 30 min="1" max="1440" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")
+            p(class="text-xs text-gray-500 mt-1") Berapa lama data API di-cache (1-1440 menit)
+          
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="compression_enabled" checked=settings.compression_enabled class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Aktifkan kompresi gzip
+            p(class="text-xs text-gray-500 mt-1") Mengaktifkan kompresi untuk mempercepat loading
+
+      div(class="bg-white rounded-lg shadow p-6")
+        h3(class="text-lg font-medium text-gray-900 mb-4") Mode Maintenance
+        
+        div(class="space-y-4")
+          div
+            label(class="flex items-center")
+              input(type="checkbox" name="maintenance_mode" checked=settings.maintenance_mode class="rounded border-gray-300 text-primary-600 focus:ring-primary-500")
+              span(class="ml-2 text-sm text-gray-700") Aktifkan mode maintenance
+            p(class="text-xs text-gray-500 mt-1") Website akan menampilkan halaman maintenance untuk pengunjung
+          
+          div
+            label(class="block text-sm font-medium text-gray-700 mb-2") Pesan Maintenance
+            textarea(name="maintenance_message" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent")= settings.maintenance_message || "Website sedang dalam maintenance. Mohon kembali lagi nanti."
+
+      div(class="flex justify-end space-x-4")
+        button(type="button" onclick="resetForm()" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-medium") Reset
+        button(type="submit" class="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center")
+          svg(class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          span Simpan Pengaturan
+
+    div(class="bg-white rounded-lg shadow p-6")
+      h3(class="text-lg font-medium text-gray-900 mb-4") Aksi Cepat
+      
+      div(class="grid grid-cols-1 md:grid-cols-3 gap-4")
+        a(href="/admin/preview" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors")
+          svg(class="w-8 h-8 text-blue-600 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z")
+          div
+            h4(class="font-medium text-gray-900") Preview Website
+            p(class="text-sm text-gray-600") Lihat tampilan website
+        
+        a(href="/admin/activity-logs" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors")
+          svg(class="w-8 h-8 text-green-600 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2")
+          div
+            h4(class="font-medium text-gray-900") Activity Logs
+            p(class="text-sm text-gray-600") Lihat log aktivitas
+        
+        a(href="/admin/ad-slots" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors")
+          svg(class="w-8 h-8 text-purple-600 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-9 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2M9 8h6m-6 4h6m-6 4h6")
+          div
+            h4(class="font-medium text-gray-900") Ad Slots
+            p(class="text-sm text-gray-600") Kelola iklan
+
+block scripts
+  script.
+    function resetForm() {
+      if (confirm('Apakah Anda yakin ingin mereset semua pengaturan ke nilai default?')) {
+        document.querySelector('form').reset();
+      }
+    }
+
+    // Auto-save draft functionality
+    let autoSaveTimeout;
+    document.querySelectorAll('input, textarea').forEach(input => {
+      input.addEventListener('input', function() {
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(() => {
+          // Save to localStorage as draft
+          const formData = new FormData(document.querySelector('form'));
+          const data = {};
+          for (let [key, value] of formData.entries()) {
+            data[key] = value;
+          }
+          localStorage.setItem('settings_draft', JSON.stringify(data));
+        }, 2000);
+      });
+    });
+
+    // Load draft on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const draft = localStorage.getItem('settings_draft');
+      if (draft) {
+        const data = JSON.parse(draft);
+        Object.entries(data).forEach(([key, value]) => {
+          const input = document.querySelector(`[name="${key}"]`);
+          if (input) {
+            if (input.type === 'checkbox') {
+              input.checked = value === 'on';
+            } else {
+              input.value = value;
+            }
+          }
+        });
+      }
+    });
+
+    // Clear draft on successful save
+    if (window.location.search.includes('success=updated')) {
+      localStorage.removeItem('settings_draft');
+    }
+        button(onclick="clearCache()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-center")
+          svg(class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15")
+          div(class="font-medium text-gray-900") Clear Cache
+          div(class="text-sm text-gray-500") Hapus cache API
+        
+        button(onclick="generateSitemap()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-center")
+          svg(class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+          div(class="font-medium text-gray-900") Generate Sitemap
+          div(class="text-sm text-gray-500") Update sitemap.xml
+        
+        a(href="/admin/preview" target="_blank" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-center block")
+          svg(class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z")
+          div(class="font-medium text-gray-900") Preview Website
+          div(class="text-sm text-gray-500") Lihat website
+
+block scripts
+  script.
+    function clearCache() {
+      if (confirm('Hapus semua cache API?')) {
+        fetch('/admin/clear-cache', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Cache berhasil dihapus');
+          } else {
+            alert('Gagal menghapus cache');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Terjadi kesalahan');
+        });
+      }
+    }
+
+    function generateSitemap() {
+      fetch('/admin/generate-sitemap', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Sitemap berhasil di-generate');
+        } else {
+          alert('Gagal generate sitemap');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan');
+      });
+    }

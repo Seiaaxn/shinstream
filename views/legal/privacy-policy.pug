@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  div(class="min-h-screen bg-gray-50 dark:bg-gray-900")
+    div(class="max-w-4xl mx-auto px-4 py-8")
+      // Header
+      div(class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8")
+        div(class="text-center")
+          h1(class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4") Kebijakan Privasi
+          p(class="text-gray-600 dark:text-gray-400 text-lg") Perlindungan data dan privasi pengguna adalah prioritas utama kami
+          div(class="mt-4 flex items-center justify-center text-sm text-gray-500 dark:text-gray-500")
+            svg(class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+            span Terakhir diperbarui: #{new Date().toLocaleDateString('id-ID')}
+
+      // Content
+      div(class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8")
+        div(class="prose prose-lg max-w-none dark:prose-invert")
+          div(class="whitespace-pre-line text-gray-700 dark:text-gray-300 leading-relaxed")= content
+
+      // Back to Home
+      div(class="text-center mt-8")
+        a(href="/" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium")
+          svg(class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18")
+          span Kembali ke Beranda

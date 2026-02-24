@@ -1,0 +1,210 @@
+doctype html
+html(lang="id" class="scroll-smooth")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title || "AniGreen - Streaming Anime Subtitle Indonesia"
+    meta(name="description" content=description || "Nonton anime subtitle Indonesia terlengkap dan terbaru")
+    meta(name="robots" content="index, follow")
+    link(rel="icon" href="/images/favicon.ico")
+    link(rel="manifest" href="/manifest.json")
+    meta(name="theme-color" content="#16a34a")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(rel="preconnect" href="https://cdn.plyr.io")
+    link(rel="preconnect" href="https://cdn.tailwindcss.com")
+    if process.env.NODE_ENV !== 'production'
+      script(src="https://cdn.tailwindcss.com/3.4.17")
+    else
+      link(rel="stylesheet" href="/css/tailwind.min.css")
+    link(rel="preload" href="https://cdn.plyr.io/3.7.8/plyr.css" as="style" onload="this.onload=null;this.rel='stylesheet'")
+    noscript
+      link(rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css")
+    script(defer src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js")
+    script(defer src="/js/ui-enhancements.js")
+    script.
+      if (typeof tailwind !== 'undefined') {
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                primary: {
+                  50: '#f0fdf4',
+                  100: '#dcfce7',
+                  200: '#bbf7d0',
+                  300: '#86efac',
+                  400: '#4ade80',
+                  500: '#22c55e',
+                  600: '#16a34a',
+                  700: '#15803d',
+                  800: '#166534',
+                  900: '#14532d'
+                }
+              }
+            }
+          }
+        }
+      }
+    style.
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+      :root {
+        --plyr-color-main: #16a34a;
+        --plyr-range-fill-background: #16a34a;
+      }
+      * { box-sizing: border-box; }
+      body { font-family: 'Inter', system-ui, sans-serif; background: #080d08; color: #cbd5e1; margin: 0; padding: 0; }
+      ::-webkit-scrollbar { width: 5px; }
+      ::-webkit-scrollbar-track { background: #080d08; }
+      ::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 3px; }
+      .anime-card { transition: transform 0.3s ease; }
+      .anime-card:hover { transform: translateY(-6px); }
+      .anime-card:hover .card-img { transform: scale(1.1); }
+      .card-img { transition: transform 0.5s ease; will-change: transform; }
+      .anime-card:hover .card-inner { border-color: rgba(34,197,94,0.4) !important; box-shadow: 0 0 25px rgba(34,197,94,0.1); }
+      .nav-active { color: #4ade80 !important; background: rgba(34,197,94,0.1) !important; }
+      .btn-green { background: linear-gradient(135deg, #15803d, #22c55e); color: white; box-shadow: 0 0 15px rgba(34,197,94,0.25); transition: all 0.2s; }
+      .btn-green:hover { box-shadow: 0 0 25px rgba(34,197,94,0.4); transform: translateY(-1px); }
+      .section-bar { width: 4px; height: 26px; background: linear-gradient(to bottom, #15803d, #22c55e); border-radius: 4px; flex-shrink: 0; margin-right: 10px; }
+      #loadingScreen { background: #080d08; }
+      .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(8,13,8,0.96); backdrop-filter: blur(20px); border-top: 1px solid rgba(34,197,94,0.12); z-index: 50; }
+      @media (max-width: 1023px) { .bottom-nav { display: flex; } body { padding-bottom: 64px; } }
+      .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 4px; color: #4b5563; text-decoration: none; font-size: 10px; transition: color 0.2s; }
+      .bottom-nav-item svg { width: 20px; height: 20px; }
+      .bottom-nav-item.active, .bottom-nav-item:hover { color: #22c55e; }
+      .genre-chip { background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.18); color: #86efac; transition: all 0.2s; }
+      .genre-chip:hover { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.4); color: #4ade80; }
+      @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+      .fade-in { animation: fadeInUp 0.4s ease forwards; }
+      #searchInput:focus { border-color: rgba(34,197,94,0.5) !important; box-shadow: 0 0 0 2px rgba(34,197,94,0.08); outline: none; }
+  body(class="bg-[#080d08] text-slate-300 font-sans min-h-screen")
+    div(id="loadingScreen" class="fixed inset-0 z-[999] flex items-center justify-center transition-opacity duration-500")
+      div(class="text-center")
+        div(class="w-14 h-14 mx-auto mb-3 relative")
+          div(class="absolute inset-0 rounded-full border-2 border-green-900")
+          div(class="absolute inset-0 rounded-full border-2 border-green-500 border-t-transparent animate-spin")
+        p(class="text-green-400 font-bold text-lg tracking-wide") AniGreen
+        p(class="text-gray-600 text-xs mt-1") Loading...
+    header(class="sticky top-0 z-40 bg-[#080d08]/90 backdrop-blur-xl border-b border-green-900/20")
+      nav(class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-3 md:gap-4")
+        a(href="/" class="flex items-center gap-2 flex-shrink-0")
+          div(class="w-8 h-8 rounded-xl flex items-center justify-center btn-green")
+            svg(class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20")
+              path(d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z")
+          span(class="text-base font-bold text-white hidden sm:block") AniGreen
+        div(class="hidden lg:flex items-center gap-0.5")
+          a(href="/" class=`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${currentPage === 'home' ? 'nav-active text-green-400' : 'text-gray-400 hover:text-green-400 hover:bg-green-900/15'}`) Home
+          a(href="/explore" class=`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${currentPage === 'explore' ? 'nav-active text-green-400' : 'text-gray-400 hover:text-green-400 hover:bg-green-900/15'}`) Explore
+          a(href="/genres" class=`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${currentPage === 'genres' ? 'nav-active text-green-400' : 'text-gray-400 hover:text-green-400 hover:bg-green-900/15'}`) Genre
+          a(href="/schedule" class=`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${currentPage === 'schedule' ? 'nav-active text-green-400' : 'text-gray-400 hover:text-green-400 hover:bg-green-900/15'}`) Jadwal
+        div(class="flex-1 max-w-md mx-1 relative")
+          form(action="/search" method="GET")
+            div(class="absolute inset-y-0 left-3 flex items-center pointer-events-none")
+              svg(class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+            input(
+              type="text" name="q" placeholder="Cari anime..."
+              value=keyword || ""
+              class="w-full pl-9 pr-4 py-2 bg-white/5 border border-green-900/30 rounded-lg text-sm text-gray-300 placeholder-gray-600 transition-all"
+              autocomplete="off" id="searchInput"
+            )
+          div(id="searchSuggestions" class="absolute top-full left-0 right-0 bg-[#0d150d] border border-green-900/30 rounded-xl shadow-2xl mt-1 hidden z-50 overflow-hidden")
+        div(class="flex items-center gap-1.5 flex-shrink-0")
+          if currentUser
+            a(href="/account" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-green-900/40 text-green-400 text-sm hover:bg-green-900/20 transition-all")
+              svg(class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+              span Akun
+          else
+            a(href="/auth/login" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg btn-green text-white text-sm font-medium") Masuk
+          button(id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-gray-500 hover:text-green-400 hover:bg-green-900/15 transition-all")
+            svg(class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16")
+      div(id="mobileMenu" class="lg:hidden hidden border-t border-green-900/15")
+        div(class="max-w-7xl mx-auto px-4 py-2 flex flex-col gap-0.5")
+          a(href="/" class=`px-3 py-2 rounded-lg text-sm ${currentPage === 'home' ? 'text-green-400 bg-green-900/15' : 'text-gray-400 hover:text-green-400'}`) Home
+          a(href="/explore" class=`px-3 py-2 rounded-lg text-sm ${currentPage === 'explore' ? 'text-green-400 bg-green-900/15' : 'text-gray-400 hover:text-green-400'}`) Explore
+          a(href="/genres" class=`px-3 py-2 rounded-lg text-sm ${currentPage === 'genres' ? 'text-green-400 bg-green-900/15' : 'text-gray-400 hover:text-green-400'}`) Genre
+          a(href="/schedule" class=`px-3 py-2 rounded-lg text-sm ${currentPage === 'schedule' ? 'text-green-400 bg-green-900/15' : 'text-gray-400 hover:text-green-400'}`) Jadwal
+    main
+      block content
+    footer(class="bg-[#050b05] border-t border-green-900/15 mt-16")
+      div(class="max-w-7xl mx-auto px-4 py-10")
+        div(class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8")
+          div
+            div(class="flex items-center gap-2 mb-3")
+              div(class="w-8 h-8 rounded-xl flex items-center justify-center btn-green")
+                svg(class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20")
+                  path(d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z")
+              span(class="font-bold text-white") AniGreen
+            p(class="text-gray-600 text-sm leading-relaxed") Streaming anime subtitle Indonesia terlengkap dan terbaru.
+          div
+            h4(class="text-white font-semibold text-sm mb-3") Navigasi
+            div(class="flex flex-col gap-2")
+              each link in [['/', 'Home'], ['/explore', 'Explore'], ['/genres', 'Genre'], ['/schedule', 'Jadwal']]
+                a(href=link[0] class="text-gray-600 hover:text-green-400 text-sm transition-colors")= link[1]
+          div
+            h4(class="text-white font-semibold text-sm mb-3") Info
+            div(class="flex flex-col gap-2")
+              each link in [['/about', 'Tentang'], ['/contact', 'Kontak'], ['/dmca', 'DMCA'], ['/privacy-policy', 'Privasi']]
+                a(href=link[0] class="text-gray-600 hover:text-green-400 text-sm transition-colors")= link[1]
+        div(class="border-t border-green-900/10 pt-6")
+          p(class="text-gray-700 text-xs text-center") © 2025 AniGreen. Dibuat dengan ❤️ untuk para pecinta anime.
+    button(id="scrollToTop" class="fixed bottom-20 right-4 w-10 h-10 btn-green rounded-xl shadow-lg z-40 opacity-0 invisible flex items-center justify-center transition-all duration-300")
+      svg(class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+        path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18")
+    nav(class="bottom-nav")
+      a(href="/" class=`bottom-nav-item ${currentPage === 'home' ? 'active' : ''}`)
+        svg(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+        span Home
+      a(href="/explore" class=`bottom-nav-item ${currentPage === 'explore' ? 'active' : ''}`)
+        svg(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+        span Explore
+      a(href="/genres" class=`bottom-nav-item ${currentPage === 'genres' ? 'active' : ''}`)
+        svg(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z")
+        span Genre
+      a(href="/schedule" class=`bottom-nav-item ${currentPage === 'schedule' ? 'active' : ''}`)
+        svg(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z")
+        span Jadwal
+    script.
+      const loadingScreen = document.getElementById('loadingScreen');
+      function hideLoader() { if(loadingScreen){ loadingScreen.style.opacity='0'; setTimeout(()=>loadingScreen.style.display='none',400); } }
+      window.addEventListener('load', hideLoader); setTimeout(hideLoader, 4000);
+      document.getElementById('mobileMenuBtn')?.addEventListener('click', () => document.getElementById('mobileMenu')?.classList.toggle('hidden'));
+      const searchInput = document.getElementById('searchInput');
+      const searchSuggestions = document.getElementById('searchSuggestions');
+      let searchTimeout;
+      searchInput?.addEventListener('input', function() {
+        const query = this.value.trim();
+        clearTimeout(searchTimeout);
+        if (query.length < 2) { searchSuggestions.classList.add('hidden'); return; }
+        searchTimeout = setTimeout(() => {
+          fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`).then(r=>r.json()).then(data=>{
+            if (data.suggestions?.length > 0) {
+              searchSuggestions.innerHTML = data.suggestions.map(a=>`<a href="/anime/${a.slug}" class="flex items-center gap-3 p-3 hover:bg-green-900/20 border-b border-green-900/10 last:border-b-0 transition-colors"><img src="${a.poster}" class="w-9 h-12 object-cover rounded-lg flex-shrink-0" onerror="this.src='https://placehold.co/80x112?text=N'"><span class="text-sm text-gray-300 line-clamp-2">${a.title}</span></a>`).join('');
+              searchSuggestions.classList.remove('hidden');
+            } else searchSuggestions.classList.add('hidden');
+          }).catch(()=>searchSuggestions.classList.add('hidden'));
+        }, 300);
+      });
+      document.addEventListener('click', e => { if (!searchInput?.contains(e.target) && !searchSuggestions?.contains(e.target)) searchSuggestions?.classList.add('hidden'); });
+      const scrollBtn = document.getElementById('scrollToTop');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) { scrollBtn.classList.remove('opacity-0','invisible'); scrollBtn.classList.add('opacity-100','visible'); }
+        else { scrollBtn.classList.add('opacity-0','invisible'); scrollBtn.classList.remove('opacity-100','visible'); }
+      });
+      scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      function showToast(msg, type='info') {
+        const c = {success:'#16a34a',error:'#dc2626',info:'#0891b2',warning:'#d97706'};
+        const t = document.createElement('div');
+        t.style.cssText = `position:fixed;top:20px;right:20px;background:${c[type]};color:white;padding:11px 18px;border-radius:10px;z-index:9999;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,0.4);transform:translateX(200%);transition:transform 0.3s ease`;
+        t.textContent = msg; document.body.appendChild(t);
+        setTimeout(()=>t.style.transform='translateX(0)',50);
+        setTimeout(()=>{t.style.transform='translateX(200%)'; setTimeout(()=>t.remove(),300);},3000);
+      }
+      window.showToast = showToast;
+    block scripts

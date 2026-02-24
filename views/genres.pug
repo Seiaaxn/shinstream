@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  div(class="max-w-7xl mx-auto px-4 md:px-6 py-8")
+    //- Header
+    div(class="mb-8")
+      div(class="flex items-center gap-3 mb-2")
+        div(class="section-bar")
+        h1(class="text-2xl font-bold text-white") Genre Anime
+      p(class="text-gray-500 text-sm ml-4") Temukan anime berdasarkan genre favoritmu
+    //- Genre Grid
+    if genres && genres.length > 0
+      div(class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3")
+        each genre in genres
+          a(href=`/genres/${genre.slug}` class="group relative overflow-hidden rounded-xl border border-green-900/20 bg-[#0d150d] p-4 hover:border-green-700/40 hover:bg-green-900/15 transition-all duration-200 text-center")
+            div(class="w-10 h-10 rounded-xl bg-green-900/30 border border-green-800/30 flex items-center justify-center mx-auto mb-3 group-hover:bg-green-800/40 transition-all")
+              svg(class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z")
+            h3(class="font-semibold text-gray-300 text-sm group-hover:text-green-400 transition-colors mb-1")= genre.name
+            if genre.count
+              p(class="text-xs text-gray-600")= `${genre.count} anime`
+            else
+              p(class="text-xs text-gray-600") Lihat anime
+    else
+      div(class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3")
+        each genre in ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery', 'Romance', 'Sci-Fi', 'Slice of Life', 'Sports', 'Supernatural', 'Thriller', 'Mecha', 'School', 'Shounen', 'Shoujo', 'Seinen']
+          a(href=`/genres/${genre.toLowerCase().replace(/ /g, '-')}` class="group relative overflow-hidden rounded-xl border border-green-900/20 bg-[#0d150d] p-4 hover:border-green-700/40 hover:bg-green-900/15 transition-all duration-200 text-center")
+            div(class="w-10 h-10 rounded-xl bg-green-900/30 border border-green-800/30 flex items-center justify-center mx-auto mb-3 group-hover:bg-green-800/40 transition-all")
+              svg(class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z")
+            h3(class="font-semibold text-gray-300 text-sm group-hover:text-green-400 transition-colors")= genre

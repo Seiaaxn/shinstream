@@ -1,0 +1,165 @@
+extends layout
+
+block content
+  div(class="max-w-7xl mx-auto px-4 md:px-6 py-5")
+    //- Breadcrumb
+    nav(class="flex items-center gap-1.5 text-sm text-gray-600 mb-5 flex-wrap")
+      a(href="/" class="hover:text-green-400 transition-colors") Home
+      svg(class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+        path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7")
+      a(href=`/anime/${anime.slug}` class="hover:text-green-400 transition-colors truncate max-w-[160px]")= anime.title
+      svg(class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+        path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7")
+      span(class="text-green-400 font-medium") Episode #{episode.number}
+
+    div(class="grid grid-cols-1 lg:grid-cols-4 gap-5")
+      //- Player area
+      div(class="lg:col-span-3 space-y-4")
+        //- Video player
+        div(class="relative rounded-2xl overflow-hidden bg-black shadow-2xl shadow-green-900/20")
+          //- Glow
+          div(class="absolute -inset-px rounded-2xl opacity-30" style="background: linear-gradient(135deg, #15803d, #22c55e); z-index: 0; filter: blur(1px)")
+          div(class="relative aspect-video bg-black rounded-2xl overflow-hidden z-10")
+            //- Loading overlay
+            div(id="playerLoading" class="absolute inset-0 bg-black/90 flex items-center justify-center z-20 transition-opacity duration-500")
+              div(class="text-center")
+                div(class="w-12 h-12 mx-auto mb-3 relative")
+                  div(class="absolute inset-0 rounded-full border-2 border-green-900")
+                  div(class="absolute inset-0 rounded-full border-2 border-green-500 border-t-transparent animate-spin")
+                p(class="text-gray-300 text-sm") Memuat video...
+            //- Video or Iframe
+            if episode.quality && Object.keys(episode.quality).length > 0 && episode.hasDirectStream
+              video(id="player" class="w-full h-full" preload="metadata" poster='/images/poster.png' playsinline)
+                if episode.video_sources
+                  if Array.isArray(episode.video_sources)
+                    each source in episode.video_sources
+                      source(src=source.url || source type=source.type || "video/mp4")
+                  else
+                    each source in episode.qlist
+                      source(src=episode.quality[source] type="video/mp4" size=source)
+            else
+              iframe#iframePlayer(
+                class="w-full h-full"
+                src=episode.embed_url || episode.iframe_url
+                frameborder="0"
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+              )
+
+        //- Title & Controls
+        div(class="flex items-start justify-between gap-4")
+          div(class="flex-1 min-w-0")
+            h1(class="text-lg font-bold text-white line-clamp-1")= anime.title
+            p(class="text-green-400 text-sm mt-0.5") Episode #{episode.number}#{episode.title && episode.title !== 'Episode '+episode.number ? ' — '+episode.title : ''}
+          //- Nav buttons
+          div(class="flex items-center gap-2 flex-shrink-0")
+            if navigation && navigation.isPrev
+              a(href=navigation.prevUrl class="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-green-900/30 text-gray-400 hover:text-green-400 hover:border-green-700/40 text-sm transition-all")
+                svg(class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7")
+                span(class="hidden sm:inline") Prev
+            if navigation && navigation.isNext
+              a(href=navigation.nextUrl class="flex items-center gap-1.5 px-3 py-2 rounded-xl btn-green text-white text-sm transition-all")
+                span(class="hidden sm:inline") Next
+                svg(class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7")
+
+        //- Server selector
+        if episode.sources && episode.sources.length > 1
+          div(class="p-4 rounded-xl border border-green-900/20 bg-[#0d150d]")
+            h3(class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3") Pilih Server
+            div(class="flex flex-wrap gap-2")
+              each source, i in episode.sources
+                button(
+                  class=`server-btn px-4 py-2 rounded-lg text-sm font-medium transition-all ${i === 0 ? 'btn-green text-white' : 'border border-green-900/30 text-gray-400 hover:text-green-400 hover:border-green-700/40'}`
+                  data-url=source.url || source.embed_url
+                  data-type=source.type || 'iframe'
+                )= source.name || source.quality || `Server ${i + 1}`
+
+        //- Quality selector
+        if episode.quality && Object.keys(episode.quality).length > 0
+          div(class="p-4 rounded-xl border border-green-900/20 bg-[#0d150d]")
+            h3(class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3") Kualitas Video
+            div(class="flex flex-wrap gap-2")
+              each qual in episode.qlist || Object.keys(episode.quality)
+                button(
+                  class=`quality-btn px-4 py-2 rounded-lg text-sm font-medium border border-green-900/30 text-gray-400 hover:text-green-400 hover:border-green-700/40 transition-all`
+                  data-url=episode.quality[qual]
+                )= qual
+
+        //- Download links
+        if episode.download_links && episode.download_links.length > 0
+          div(class="p-4 rounded-xl border border-green-900/20 bg-[#0d150d]")
+            h3(class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3") Download Episode
+            div(class="flex flex-wrap gap-2")
+              each dl in episode.download_links
+                a(href=dl.url || dl target="_blank" rel="noopener" class="flex items-center gap-2 px-3 py-2 rounded-lg border border-cyan-900/30 text-cyan-400 text-sm hover:bg-cyan-900/20 transition-all")
+                  svg(class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                    path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4")
+                  span= dl.quality || dl.resolution || 'Download'
+                  if dl.size
+                    span(class="text-gray-600 text-xs")= dl.size
+
+      //- Sidebar - Episode list
+      div(class="lg:col-span-1")
+        div(class="sticky top-20")
+          div(class="rounded-xl border border-green-900/20 bg-[#0d150d] overflow-hidden")
+            div(class="p-4 border-b border-green-900/15 flex items-center justify-between")
+              h3(class="font-semibold text-gray-200 text-sm") Daftar Episode
+              a(href=`/anime/${anime.slug}` class="text-green-400 text-xs hover:text-green-300 transition-colors") Detail →
+            div(class="p-2 max-h-[500px] overflow-y-auto")
+              if anime.episodes && anime.episodes.length > 0
+                div(class="space-y-0.5")
+                  each ep in anime.episodes
+                    a(
+                      href=`/anime/${anime.slug}/episode/${ep.episode_number || ep.number}`
+                      class=`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all ${(ep.episode_number || ep.number) == episode.number ? 'bg-green-900/30 text-green-400 border border-green-800/40' : 'text-gray-400 hover:bg-green-900/15 hover:text-green-400'}`
+                    )
+                      span= `EP ${ep.episode_number || ep.number}`
+                      if (ep.episode_number || ep.number) == episode.number
+                        div(class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse")
+              else
+                p(class="text-gray-600 text-sm p-3 text-center") Tidak ada episode
+
+  block scripts
+    script.
+      // Hide loading overlay when iframe/video loads
+      const loader = document.getElementById('playerLoading');
+      const iframe = document.getElementById('iframePlayer');
+      const video = document.getElementById('player');
+      if (iframe) {
+        iframe.addEventListener('load', () => { if(loader){ loader.style.opacity='0'; setTimeout(()=>loader.style.display='none',300); } });
+        setTimeout(() => { if(loader){ loader.style.opacity='0'; setTimeout(()=>loader.style.display='none',300); } }, 3000);
+      }
+      if (video) {
+        video.addEventListener('canplay', () => { if(loader){ loader.style.opacity='0'; setTimeout(()=>loader.style.display='none',300); } });
+      }
+
+      // Plyr init
+      if (document.getElementById('player') && typeof Plyr !== 'undefined') {
+        const player = new Plyr('#player', { controls: ['play-large','play','progress','current-time','mute','volume','captions','fullscreen'], quality: { default: 720, options: [1080,720,480,360] } });
+      }
+
+      // Server switching
+      document.querySelectorAll('.server-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.server-btn').forEach(b => { b.className = b.className.replace('btn-green text-white', 'border border-green-900/30 text-gray-400 hover:text-green-400 hover:border-green-700/40'); });
+          this.classList.remove('border','border-green-900/30','text-gray-400','hover:text-green-400','hover:border-green-700/40');
+          this.classList.add('btn-green','text-white');
+          const url = this.dataset.url;
+          const iframe = document.getElementById('iframePlayer');
+          if (iframe && url) iframe.src = url;
+        });
+      });
+
+      // Quality switching
+      document.querySelectorAll('.quality-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('btn-green','text-white'));
+          this.classList.add('btn-green','text-white');
+          const url = this.dataset.url;
+          const video = document.getElementById('player');
+          if (video && url) { const pos = video.currentTime; video.src = url; video.currentTime = pos; video.play(); }
+        });
+      });

@@ -1,0 +1,75 @@
+extends layout
+
+block content
+  div(class="max-w-7xl mx-auto px-4 md:px-6 py-8")
+    //- Header
+    div(class="mb-8")
+      div(class="flex items-center gap-3 mb-2")
+        div(class="section-bar")
+        h1(class="text-2xl font-bold text-white") Jadwal Tayang
+      p(class="text-gray-500 text-sm ml-4") Jadwal anime ongoing yang tayang setiap harinya
+
+    //- Day tabs
+    - const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
+    - const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    - const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1
+    - const activeDay = selectedDay || dayKeys[todayIndex]
+
+    div(class="flex items-center gap-1.5 flex-wrap mb-8 pb-4 border-b border-green-900/15")
+      each day, i in days
+        a(href=`/schedule?day=${dayKeys[i]}` class=`px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${activeDay === dayKeys[i] ? 'btn-green text-white' : 'border border-green-900/25 text-gray-400 hover:text-green-400 hover:border-green-700/40'} ${i === todayIndex ? 'relative' : ''}`)
+          = day
+          if i === todayIndex
+            span(class="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full")
+
+    //- Schedule content
+    if schedule && schedule[activeDay] && schedule[activeDay].length > 0
+      div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4")
+        each anime in schedule[activeDay]
+          a(href=`/anime/${anime.slug}` class="group flex items-center gap-3 p-3.5 rounded-xl border border-green-900/20 bg-[#0d150d] hover:border-green-700/40 hover:bg-green-900/10 transition-all duration-200")
+            div(class="relative flex-shrink-0")
+              img(src=anime.poster alt=anime.title class="w-14 h-20 object-cover rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/100x140?text=N'")
+              if anime.current_episode
+                div(class="absolute -bottom-1 -right-1 px-1 py-0.5 rounded text-xs font-bold bg-green-600 text-white")= anime.current_episode
+            div(class="flex-1 min-w-0")
+              h3(class="font-semibold text-gray-200 text-sm line-clamp-2 group-hover:text-green-400 transition-colors mb-1")= anime.title
+              if anime.release_time
+                div(class="flex items-center gap-1.5 text-green-400 text-xs")
+                  svg(class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                    path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+                  span= anime.release_time
+              if anime.genres && anime.genres.length > 0
+                div(class="flex items-center gap-1 mt-1 flex-wrap")
+                  each genre in anime.genres.slice(0, 2)
+                    span(class="px-1.5 py-0.5 rounded text-xs bg-green-900/30 text-green-500 border border-green-900/30")= genre.name || genre
+    else
+      //- Fallback: show ongoing anime
+      if ongoingAnime && ongoingAnime.length > 0
+        div(class="mb-6 p-4 rounded-xl border border-green-900/20 bg-green-900/10")
+          p(class="text-green-400 text-sm font-medium mb-1")
+            svg(class="w-4 h-4 inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z")
+            | Data jadwal per hari belum tersedia
+          p(class="text-gray-500 text-xs") Berikut anime ongoing yang sedang tayang:
+        div(class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4")
+          each anime in ongoingAnime
+            a(href=`/anime/${anime.slug}` class="group flex items-center gap-3 p-3.5 rounded-xl border border-green-900/20 bg-[#0d150d] hover:border-green-700/40 hover:bg-green-900/10 transition-all duration-200")
+              div(class="relative flex-shrink-0")
+                img(src=anime.poster alt=anime.title class="w-14 h-20 object-cover rounded-lg" onerror="this.onerror=null;this.src='https://placehold.co/100x140?text=N'")
+                if anime.current_episode
+                  div(class="absolute -bottom-1 -right-1 px-1 py-0.5 rounded text-xs font-bold bg-green-600 text-white")= anime.current_episode
+              div(class="flex-1 min-w-0")
+                h3(class="font-semibold text-gray-200 text-sm line-clamp-2 group-hover:text-green-400 transition-colors mb-1")= anime.title
+                if anime.release_day
+                  div(class="flex items-center gap-1.5 text-green-400 text-xs")
+                    svg(class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                      path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z")
+                    span= anime.release_day
+                if anime.newest_release_date
+                  p(class="text-gray-600 text-xs mt-0.5")= anime.newest_release_date
+      else
+        div(class="text-center py-16")
+          div(class="w-16 h-16 rounded-2xl bg-green-900/20 border border-green-900/30 flex items-center justify-center mx-auto mb-4")
+            svg(class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z")
+          p(class="text-gray-500") Jadwal tidak tersedia

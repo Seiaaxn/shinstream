@@ -1,0 +1,80 @@
+{
+    "name": "KitaNime - Streaming Anime Sub Indo",
+    "short_name": "KitaNime",
+    "description": "Platform streaming anime subtitle Indonesia terlengkap dan terbaru",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#7c3aed",
+    "theme_color": "#7c3aed",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "id",
+    "categories": [
+        "entertainment",
+        "streaming",
+        "anime"
+    ],
+    "icons": [
+        {
+            "src": "/images/logo.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/images/logo.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/images/logo.png",
+            "sizes": "540x720",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "KitaNime Home"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Anime Ongoing",
+            "short_name": "Ongoing",
+            "description": "Lihat anime yang sedang tayang",
+            "url": "/ongoing",
+            "icons": [
+                {
+                    "src": "/images/logo.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Cari Anime",
+            "short_name": "Search",
+            "description": "Cari anime favorit Anda",
+            "url": "/search",
+            "icons": [
+                {
+                    "src": "/images/logo.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Genre",
+            "short_name": "Genre",
+            "description": "Jelajahi anime berdasarkan genre",
+            "url": "/genres",
+            "icons": [
+                {
+                    "src": "/images/logo.png",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false
+}

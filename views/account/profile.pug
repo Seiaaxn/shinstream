@@ -1,0 +1,126 @@
+extends ../layout
+
+block content
+  div(class="container mx-auto px-4 py-8")
+    h1(class="text-2xl font-bold mb-6") Akun Saya
+
+    //- Tab Navigation
+    div(class="mb-6 border-b border-gray-200 dark:border-gray-700")
+      nav(class="flex space-x-4")
+        a(href="/account?tab=profile" class=`py-2 px-4 text-sm font-medium ${activeTab === 'profile' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`) Profil
+        a(href="/account?tab=bookmarks" class=`py-2 px-4 text-sm font-medium ${activeTab === 'bookmarks' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`) Bookmark
+        a(href="/account?tab=history" class=`py-2 px-4 text-sm font-medium ${activeTab === 'history' ? 'border-b-2 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`) Riwayat Tonton
+
+    //- Success/Error Messages
+    if success
+      div(class="mb-4 bg-green-50 border border-green-200 rounded p-3 text-green-700")
+        | Perubahan berhasil disimpan.
+    if error
+      div(class="mb-4 bg-red-50 border border-red-200 rounded p-3 text-red-700")
+        | Terjadi kesalahan: #{error}
+
+    //- Tab Content
+    div
+      //- Profile Tab
+      if activeTab === 'profile'
+        div(class="grid grid-cols-1 md:grid-cols-3 gap-6")
+          div(class="md:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow p-6")
+            h2(class="text-lg font-semibold mb-4") Profil
+            form(action="/account/profile" method="POST" class="space-y-4")
+              div
+                label(class="block text-sm mb-1") Nama
+                input(type="text" name="name" required value=userProfile.name class="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900")
+              div
+                label(class="block text-sm mb-1") Email
+                input(type="email" name="email" required value=userProfile.email class="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900")
+              button(type="submit" class="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700") Simpan
+
+          div(class="bg-white dark:bg-gray-800 rounded-xl shadow p-6")
+            h2(class="text-lg font-semibold mb-4") Foto Profil
+            div(class="flex items-center space-x-4")
+              img(src=userProfile.avatar_url || '/images/logo.png' alt='Avatar' class='w-16 h-16 rounded-full object-cover')
+              form(action="/account/avatar" method="POST" enctype="multipart/form-data" )
+                input(type="file" name="avatar" accept="image/png,image/jpeg,image/webp" required class="mb-2")
+                button(type="submit" class="bg-gray-700 text-white px-3 py-2 rounded hover:bg-gray-800 text-sm") Upload
+
+        div(class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow p-6")
+          h2(class="text-lg font-semibold mb-4") Ganti Password
+          form(action="/account/password" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4")
+            div
+              label(class="block text-sm mb-1") Password Lama
+              input(type="password" name="old_password" required class="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900")
+            div
+              label(class="block text-sm mb-1") Password Baru
+              input(type="password" name="new_password" required minlength="6" class="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900")
+            div(class="flex items-end")
+              button(type="submit" class="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 w-full") Simpan Password
+
+      //- Bookmarks Tab
+      else if activeTab === 'bookmarks'
+        if bookmarks && bookmarks.length
+          div(class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4")
+            each b in bookmarks
+              a(href=`/anime/${b.anime_slug}` class="bg-white dark:bg-gray-800 rounded-xl shadow hover-lift overflow-hidden")
+                img(src=b.poster_url alt=b.anime_title class="w-full h-44 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x560?text=No+Image';")
+                div(class="p-3 text-sm line-clamp-2")= b.anime_title
+        else
+          div(class="text-gray-600 dark:text-gray-400") Belum ada bookmark.
+
+      //- History Tab
+      else if activeTab === 'history'
+        if watchHistory && watchHistory.length > 0
+          div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")
+            each item in watchHistory
+              div(class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300")
+                div(class="relative")
+                  img(src=item.poster_url || '/images/poster.png' alt=item.anime_title class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='/images/poster.png';")
+                  if item.completed
+                    div(class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium") Selesai
+                  else
+                    div(class="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium") Episode #{item.episode_number}
+                  
+                  div(class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4")
+                    div(class="text-white")
+                      h3(class="font-bold text-lg mb-1 line-clamp-2")= item.anime_title
+                      p(class="text-sm text-gray-200") Episode #{item.episode_number}
+                      
+                      if item.watch_time && item.total_duration
+                        - var progressPercent = (item.watch_time / item.total_duration) * 100
+                        div(class="mt-2")
+                          div(class="flex justify-between text-xs text-gray-200 mb-1")
+                            span= Math.floor(item.watch_time / 60) + ':' + String(Math.floor(item.watch_time % 60)).padStart(2, '0')
+                            span= Math.floor(item.total_duration / 60) + ':' + String(Math.floor(item.total_duration % 60)).padStart(2, '0')
+                          div(class="w-full bg-gray-600 rounded-full h-1")
+                            div(class="bg-primary-500 h-1 rounded-full transition-all duration-300" style=`width: ${progressPercent}%`)
+                
+                div(class="p-4")
+                  div(class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-3")
+                    span= new Date(item.last_watched).toLocaleDateString('id-ID')
+                    if item.total_episodes_watched > 1
+                      span= item.total_episodes_watched + ' episode ditonton'
+                  
+                  div(class="flex space-x-2")
+                    a(href=`/anime/${item.anime_slug}/episode/${item.episode_number}` class="flex-1 bg-primary-600 text-white py-2 px-3 rounded-lg hover:bg-primary-700 transition-colors text-center text-sm font-medium")
+                      if item.completed
+                        | Lihat Episode
+                      else
+                        | Lanjutkan
+                    a(href=`/anime/${item.anime_slug}` class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-2 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-center text-sm font-medium")
+                      | Detail
+          
+          if pagination && pagination.hasMore
+            div(class="text-center mt-8")
+              a(href=`${pagination.baseUrl}&page=${pagination.page + 1}` class="inline-flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors")
+                span Lihat Lebih Banyak
+                svg(class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7")
+
+        else
+          div(class="text-center py-12")
+            div(class="max-w-md mx-auto")
+              svg(class="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z")
+              h3(class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2") Belum Ada Riwayat
+              p(class="text-gray-500 dark:text-gray-400 mb-6") Mulai nonton anime untuk melihat riwayat di sini
+              a(href="/" class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors")
+                span Mulai Nonton

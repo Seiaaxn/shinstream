@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  div(class="container mx-auto px-4 py-6")
+    h1(class="text-2xl font-bold mb-4") Bookmark Saya
+    if bookmarks && bookmarks.length
+      div(class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4")
+        each b in bookmarks
+          a(href=`/anime/${b.anime_slug}` class="bg-white dark:bg-gray-800 rounded-xl shadow hover-lift overflow-hidden")
+            img(src=b.poster_url alt=b.anime_title class="w-full h-44 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x560?text=No+Image';")
+            div(class="p-3 text-sm line-clamp-2")= b.anime_title
+    else
+      div(class="text-gray-600 dark:text-gray-400") Belum ada bookmark.
+
+
